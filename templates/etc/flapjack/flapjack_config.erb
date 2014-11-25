@@ -1,0 +1,347 @@
+<%
+if @prd_json_api_logger_syslog_errors
+  prd_jsonapi_syslog = 'yes'
+else
+  prd_jsonapi_syslog = 'no'
+end
+
+if @prd_web_ui_logger_syslog_errors
+  prd_webui_syslog = 'yes'
+else
+  prd_webui_syslog = 'no'
+end
+
+if @prd_web_ui_enabled
+  prd_webui_enable = 'yes'
+else
+  prd_webui_enable = 'no'
+end
+if @prd_json_api_enabled
+  prd_json_api_enable = 'yes'
+else
+  prd_json_api_enable = 'no'
+end
+if @prd_oobetet_enabled
+  prd_oobetet_enable = 'yes'
+else
+  prd_oobetet_enable = 'no'
+end
+
+if @prd_oobetet_logger_syslog_errors
+  prd_oobetet_syslog = 'yes'
+else
+  prd_oobetet_syslog = 'no'
+end
+
+if @prd_gw_pagerduty_logger_syslog_errors
+  prd_pagerduty_syslog = 'yes'
+else
+  prd_pagerduty_syslog = 'no'
+end
+
+if @prd_gw_pagerduty_enabled
+  prd_pagerduty_enabled = 'yes'
+else
+  prd_pagerduty_enabled = 'no'
+end
+
+if @prd_gw_jabber_logger_syslog_errors
+  prd_jabber_syslog = 'yes'
+else
+  prd_jabber_syslog = 'no'
+end
+
+if @prd_gw_jabber_alias
+  prd_jabber_enabled = 'yes'
+else
+  prd_jabber_enabled = 'no'
+end
+
+if @prd_gw_sns_enabled
+  prd_sns_enable = 'yes'
+else
+  prd_sns_enable = 'no'
+end
+if @prd_gw_sms_logger_syslog_errors
+  prd_sms_logger_syslog = 'yes'
+else
+  prd_sms_logger_syslog = 'no'
+end
+if @prd_gw_sms_enabled
+  prd_sms_enabled = 'yes'
+else
+  prd_sms_enabled = 'no'
+end
+
+if @prd_gw_email_smtp_starttls
+  smtp_starttls = 'true'
+else
+  smtp_starttls = 'false'
+end
+
+if @prd_gw_email_logger_syslog_errors
+  prd_email_logger_syslog = 'yes'
+else
+  prd_email_logger_syslog = 'no'
+end
+
+if @prd_gw_email_enabled
+  prd_email = 'yes'
+else
+  prd_email = 'no'
+end
+
+if @prd_notifier_logger_syslog_errors
+  notifier_logger_syslog = 'yes'
+else
+  notifier_logger_syslog = 'no'
+end
+
+if @prd_processor_logger_syslog_errors
+  prog_logger_syslog = 'yes'
+else
+  prog_logger_syslog = 'no'
+end
+
+if @prd_processor_enabled
+  processor_val = 'yes'
+else
+  processor_val = 'no'
+end
+
+if @prd_notifer_enabled
+  prd_notifier_val = 'yes'
+else
+  prd_notifier_val = 'no'
+end
+
+if @prd_processor_archive_events
+  prd_archive = 'true'
+else
+  prd_archive = 'false'
+end
+
+-%>
+---
+
+production:
+  pid_dir: <%=@prd_pid_dir%>
+  log_dir: <%=@prd_log_dir%>
+  daemonize: yes
+  logger:
+    level: <%=@prd_logger_level %>
+    syslog_errors: yes
+  redis:
+    host: <%=@redis_server%>
+    port: <%=@redis_port%>
+    db: <%=@redis_db%>
+  # Processes monitoring events off the *events* queue (a redis list) and decides
+  # what actions to take (generate notification event, record state changes, etc)
+  processor:
+    enabled: <%=processor_val%>
+    queue: <%=@prd_queue_processor%>
+    notifier_queue: <%=@prd_queue_notifier%>
+    archive_events: <%=prd_archive%>
+    events_archive_maxage: <%=@prd_processor_events_archive_maxage%>
+    # Flapjack sets scheduled maintenance on new check results so contacts aren't
+    # notified as soon as Flapjack becomes aware of an entity to notify on.
+    # This is useful is cases where your monitoring starts checking something
+    # before it is completely provisioned
+    # Value parsed by https://github.com/hpoydar/chronic_duration
+    # You can disable this setting by specifying 0 seconds.
+    new_check_scheduled_maintenance_duration: <%=@prd_processor_new_check_scheduled_maintenance_duration%>
+    new_check_scheduled_maintenance_ignore_tags:
+<% if @prd_processor_tags_to_bypass_auto_scheduled_maint and @prd_processor_tags_to_bypass_auto_scheduled_maint.length > 0 -%>
+<%  @prd_processor_tags_to_bypass_auto_scheduled_maint.each do |tag| -%>
+      - <%=tag%>
+<%end end -%>
+    logger:
+      level: <%=@prd_processor_logger_level%>
+      syslog_errors: <%=prog_logger_syslog%>
+  # Processes notification events off the *notifications* queue (a redis list) and
+  # works out who to notify, and on which media, and with what kind of notification
+  # message. It then creates jobs for the various notification gateways below.
+  notifier:
+    enabled: <%=prd_notifier_val%>
+    queue: <%=@prd_queue_notifier%>
+    email_queue: <%=@prd_queue_email%>
+    sms_queue: <%=@prd_queue_sms%>
+    sns_queue: <%=@prd_queue_sns%>
+    jabber_queue: <%=@prd_queue_jabber%>
+    pagerduty_queue: <%=@prd_queue_pagerduty%>
+    notification_log_file: <%=@prd_log_dir-%><%=@prd_notification_log%>
+    default_contact_timezone: UTC
+    logger:
+      level: <%=@prd_notifier_logger_level%>
+      syslog_errors: <%=notifier_logger_syslog%>
+  nagios-receiver:
+    fifo: "/var/cache/nagios3/event_stream.fifo"
+    pid_dir: <%=@prd_pid_dir%>
+    log_dir: <%=@prd_log_dir%>
+  nsca-receiver:
+    fifo: "/var/lib/nagios3/rw/nagios.cmd"
+    pid_dir: <%=@prd_pid_dir%>
+    log_dir: <%=@prd_log_dir%>
+  gateways:
+    # Generates email notifications
+    email:
+      enabled: <%=prd_email%>
+      # the redis queue this pikelet will look for notifications on
+      queue: <%=@prd_queue_email%>
+      logger:
+        level: <%=@prd_gw_email_logger_level%>
+        syslog_errors: <%=prd_email_logger_syslog%>
+      # these values are passed directly through to EventMachine::Protocols::SmtpClient configuration,
+      # and can be omitted if the defaults are acceptable
+      smtp_config:
+        from: <%=@prd_gw_email_smtp_from%>
+        reply_to: <%=@prd_gw_email_smtp_reply_to%>
+        host: <%=@prd_gw_email_smtp_host%>
+        # 1025 is the default port for http://mailcatcher.me
+        port: <%=@prd_gw_email_smtp_port%>
+        starttls: <%=smtp_starttls%>
+        auth:
+          type: <%=@prd_gw_email_smtp_auth_type%>
+          username: <%=@prd_gw_email_smtp_auth_username%>
+          password: <%=@prd_gw_email_smtp_auth_password%>
+      # location of custom alert templates
+      <%= @prd_gw_email_enabled ? '' : '#' %>templates:
+        <%= @prd_gw_email_enabled ? '' : '#' %>rollup_subject.text: '<%=@prd_email_rollup_subject_path-%>'
+        <%= @prd_gw_email_enabled ? '' : '#' %>alert_subject.text: '<%=@prd_email_alert_subject_path-%>'
+        <%= @prd_gw_email_enabled ? '' : '#' %>rollup.text: '<%=@prd_email_rollup_text_path-%>'
+        <%= @prd_gw_email_enabled ? '' : '#' %>alert.text: '<%=@prd_email_alert_text_path-%>'
+        <%= @prd_gw_email_enabled ? '' : '#' %>rollup.html: '<%=@prd_email_rollup_html_path-%>'
+        <%= @prd_gw_email_enabled ? '' : '#' %>alert.html: '<%=@prd_email_alert_html_path-%>'
+    # Generates sms notifications
+    sms:
+      enabled: <%=prd_sms_enabled%>
+      # the redis queue this pikelet will look for notifications on
+      queue: <%=@prd_queue_sms%>
+      endpoint: '<%=@prd_gw_sms_endpoint-%>'
+      username: '<%=@prd_gw_sms_username-%>'
+      password: '<%=@prd_gw_sms_password-%>'
+      logger:
+        level: <%=@prd_gw_sms_logger_level%>
+        syslog_errors: <%=prd_sms_logger_syslog%>
+      # location of custom alert templates
+      #templates:
+      #  rollup.text: '/etc/flapjack/templates/sms/rollup.text.erb'
+      #  alert.text: '/etc/flapjack/templates/sms/alert.text.erb'
+    # Generates SNS notifications
+    sns:
+      enabled: <%=prd_sns_enable%>
+      queue: <%=@prd_queue_sns%>
+      region_name: <%=@prd_gw_sns_region_name%>
+      # Don't forget to use an IAM user's credentials here so revocation is easy!
+      access_key: <%=@prd_gw_sns_access_key%>
+      secret_key: <%=@prd_gw_sns_secret_key%>
+    # Connects to an XMPP (jabber) server, sends notifications (to rooms and individuals),
+    # handles acknowledgements from jabber users and other commands.
+    jabber:
+      enabled: <%=prd_jabber_enabled%>
+      # the redis queue this pikelet will look for notifications on
+      queue: <%=@prd_queue_jabber%>
+      server: '<%=@prd_gw_jabber_server-%>'
+      port: <%=@prd_gw_jabber_port%>
+      jabberid: '<%=@prd_gw_jabber_jabberid-%>'
+      password: '<%=@prd_gw_jabber_password-%>'
+      alias: '<%=@prd_gw_jabber_alias-%>'
+      # List of strings that this pikelet user will respond to
+      identifiers:
+<% if @prd_gw_jabber_identifiers and @prd_gw_jabber_identifiers.length > 0
+@prd_gw_jabber_identifiers.each do |identifier| -%>
+        - '<%=identifier-%>'
+<%end -%><% end -%>
+      # the Multi-User Chats the pikelet should join and announce to
+      rooms:
+<% if @prd_gw_jabber_rooms and @prd_gw_jabber_rooms.length > 0
+@prd_gw_jabber_rooms.each do |room| -%>
+        - '<%=room-%>'
+<%end -%><%end -%>
+      logger:
+        level: <%=@prd_gw_jabber_logger_level%>
+        syslog_errors: <%=prd_jabber_syslog%>
+      # location of custom alert templates
+      #templates:
+      #  rollup.text: '/etc/flapjack/templates/jabber/rollup.text.erb'
+      #  alert.text: '/etc/flapjack/templates/jabber/alert.text.erb'
+    # Sends notifications to and accepts acknowledgements from [PagerDuty](http://www.pagerduty.com/)
+    # (NB: contacts will need to have a registered PagerDuty account to use this)
+    pagerduty:
+      enabled: <%=prd_pagerduty_enabled%>
+      # the redis queue this pikelet will look for notifications on
+      queue: <%=@prd_queue_pagerduty%>
+      logger:
+        level: <%=@prd_gw_pagerduty_logger_level%>
+        syslog_errors: <%=prd_pagerduty_syslog%>
+      # location of custom alert templates
+      #templates:
+      #  alert.text: '/etc/flapjack/templates/pagerduty/alert.text.erb'
+    # Browsable web interface
+    web:
+      enabled: <%=prd_webui_enable%>
+      port: <%=@prd_web_ui_port%>
+      timeout: <%=@prd_web_ui_timeout%>
+      access_log: '<%=@prd_log_dir-%><%=@prd_web_ui_accesslog-%>'
+      api_url: '<%=@prd_json_api_base_url-%>:<%=@prd_json_api_port-%>/'
+      # Full path to location of logo file, e.g. /etc/flapjack/custom_logo.png
+      #logo_image_path: "/etc/flapjack/web/custom_logo/flapjack-2013-notext-transparent-300-300.png"
+      logger:
+        level: <%=@prd_web_ui_logger_level%>
+        syslog_errors: <%=prd_webui_syslog%>
+    # HTTP API server
+    jsonapi:
+      enabled: <%=prd_json_api_enable%>
+      port: <%=@prd_json_api_port%>
+      timeout: <%=@prd_json_api_timeout%>
+      access_log: '<%=@prd_log_dir-%><%=@prd_json_api_access_log%>'
+      base_url: '<%=@prd_json_api_base_url-%>:<%=@prd_json_api_port-%>/'
+      logger:
+        level: <%=@prd_json_api_logger_level%>
+        syslog_errors: <%=prd_jsonapi_syslog%>
+    # "out-of-band" end-to-end testing, used for monitoring other instances of
+    # flapjack to ensure that they are running correctly
+    oobetet:
+      enabled: <%=prd_oobetet_enable%>
+      server: '<%=@prd_oobetet_server-%>'
+      port: <%=@prd_oobetet_port%>
+      # jabberid, password, alias, rooms: see the jabber pikelet
+      jabberid: '<%=@prd_oobetet_jabberid-%>'
+      password: '<%=@prd_oobetet_password-%>'
+      alias: '<%=@prd_oobetet_alias-%>'
+      # The check oobetet should watch for the state change
+      watched_check: '<%=@prd_oobetet_watched_check-%>'
+      # The entitiy that the check should be associated with
+      watched_entity: '<%=@prd_oobetet_watched_entity-%>'
+      # The maximum amount of time allowed to pass between state changes on that check
+      max_latency: <%=@prd_oobetet_max_latency%>
+      # The API key for a service in PagerDuty that the oobetet will use to alert you
+      pagerduty_contact: '<%=@prd_oobetet_pagerduty_contact-%>'
+      # Jabber rooms to join
+      rooms:
+<% if @prd_oobetet_jabber_rooms and @prd_oobetet_jabber_rooms.length > 0 -%>
+<%  @prd_oobetet_jabber_rooms.each do |jabber_room| -%>
+        - '<%=jabber_room-%>'
+<%end end-%>
+      logger:
+        level: <%=@prd_oobetet_logger_level%>
+        syslog_errors: <%=prd_oobetet_syslog%>
+
+development:
+  pid_dir: tmp/pids/
+  log_dir: log/
+  daemonize: yes
+  logger:
+    level: DEBUG
+    syslog_errors: yes
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    db: 13
+
+test:
+  pid_dir: tmp/pids/
+  log_dir: log/
+  redis:
+    db: 14
+    driver: ruby
