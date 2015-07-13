@@ -1,0 +1,7 @@
+fixtures:
+  repositories:
+    'apt':       'git@github.com:puppetlabs/puppetlabs-apt.git'
+    'logrotate': 'git@github.com:rodjek/puppet-logrotate.git'
+    'stdlib':    'git://github.com/puppetlabs/puppetlabs-stdlib.git'
+  symlinks:
+    'flapjack':  "#{source_dir}"

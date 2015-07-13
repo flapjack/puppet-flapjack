@@ -24,5 +24,5 @@ http://flapjack.io/ for contact details.
 Support
 -------
 
-Please log tickets and issues via [Github issues:](https://github.com/flapjack/puppet-flapjack/issues)
+Please log tickets and issues via [Github issues:](https://github.com/flpjck/puppet-flapjack/issues)
 
