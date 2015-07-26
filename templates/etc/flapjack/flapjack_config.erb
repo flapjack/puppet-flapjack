@@ -200,10 +200,12 @@ production:
         # 1025 is the default port for http://mailcatcher.me
         port: <%=@prd_gw_email_smtp_port%>
         starttls: <%=smtp_starttls%>
+<% if @prd_gw_email_smtp_auth_type != 'none' -%>
         auth:
           type: <%=@prd_gw_email_smtp_auth_type%>
           username: <%=@prd_gw_email_smtp_auth_username%>
           password: <%=@prd_gw_email_smtp_auth_password%>
+<%end -%>
       # location of custom alert templates
       <%= @prd_gw_email_enabled ? '' : '#' %>templates:
         <%= @prd_gw_email_enabled ? '' : '#' %>rollup_subject.text: '<%=@prd_email_rollup_subject_path-%>'
