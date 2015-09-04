@@ -1,28 +1,57 @@
-puppet-flapjack
-===============
+# flapjack
 
-Puppet module for flapjack - http://flapjack.io/
+#### Table of Contents
 
-License
--------
+1. [Description](#description)
+2. [Setup - The basics of getting started with flapjack](#setup)
+    * [Setup requirements](#setup-requirements)
+    * [Beginning with flapjack](#beginning-with-flapjack)
+3. [Usage - Configuration options and additional functionality](#usage)
+4. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
+5. [Limitations - OS compatibility, etc.](#limitations)
+6. [Development - Guide for contributing to the module](#development)
+6. [Report Issues](#reporting-issues)
 
-(MIT License)
 
-Copyright (C) 2013 Birger Schmidt, Jesse Reynolds, Lindsay Holmwood
+## Description
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+This module takes care of installing and configuring [Flapjack](http://flapjack.io/). It is developed with Puppet v3 and has not yet been tested on Puppet v4 / Puppet Enterprise 2015.x. 
 
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+## Setup
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+### Setup Requirements **OPTIONAL**
 
-Contact
--------
+If your module requires anything extra before setting up (pluginsync enabled, another module, etc.), mention it here.
+  
+If your most recent release breaks compatibility or requires particular steps for upgrading, you might want to include an additional "Upgrading" section here.
 
-http://flapjack.io/ for contact details.
+### Beginning with flapjack 
 
-Support
--------
+The very basic steps needed for a user to get the module up and running. This can include setup steps, if necessary, or it can be an example of the most basic use of the module.
 
-Please log tickets and issues via [Github issues:](https://github.com/flpjck/puppet-flapjack/issues)
+## Usage
+
+This section is where you describe how to customize, configure, and do the fancy stuff with your module here. It's especially helpful if you include usage examples and code samples for doing things with your module.
+
+## Reference
+
+Here, include a complete list of your module's classes, types, providers, facts, along with the parameters for each. Users refer to this section (thus the name "Reference") to find specific details; most users don't read it per se.
+
+## Limitations
+
+This is where you list OS compatibility, version compatibility, etc. If there are Known Issues, you might want to include them under their own heading here.
+
+## Development
+
+Since your module is awesome, other users will want to play with it. Let them know what the ground rules for contributing are.
+
+### Run the tests
+
+```
+bundle && bundle exec rake spec
+```
+
+## Reporting Issues
+
+Please log issues via [GitHub Issues](https://github.com/flapjack/puppet-flapjack/issues)
 
