@@ -1,0 +1,5 @@
+#include flapjack
+
+class {'flapjack':
+  
+}
