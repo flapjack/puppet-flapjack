@@ -197,6 +197,7 @@ class flapjack(
     $prd_json_api_enabled,
     $prd_oobetet_enabled,
   )
+
   validate_absolute_path(
     $prd_pid_dir,
     $prd_log_dir

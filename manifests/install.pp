@@ -3,7 +3,7 @@
 # Install FlapJack
 #
 class flapjack::install(
-  $version = 'latest'
+  $version = 'present'
 ){
   validate_string($version)
 

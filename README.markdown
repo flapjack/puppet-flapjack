@@ -15,23 +15,35 @@
 
 ## Description
 
-This module takes care of installing and configuring [Flapjack](http://flapjack.io/). It is developed with Puppet v3 and has not yet been tested on Puppet v4 / Puppet Enterprise 2015.x. 
+This module takes care of installing and configuring [Flapjack](http://flapjack.io/). It is developed with Puppet v3 and has not yet been tested on Puppet v4 / Puppet Enterprise 2015.x. It also currently only supports Flapjack 1.x and has not been tested with Flapjack 2.x.
 
 ## Setup
 
-### Setup Requirements **OPTIONAL**
+Use this module for managing machines of a supported OS, currently:
 
-If your module requires anything extra before setting up (pluginsync enabled, another module, etc.), mention it here.
-  
-If your most recent release breaks compatibility or requires particular steps for upgrading, you might want to include an additional "Upgrading" section here.
+FIXME: How to table?
 
-### Beginning with flapjack 
+|| OS || Versions ||
+| Ubuntu Linux | 12.04 "precise", 14.04 "trusty" |
+| Debian Linux | "wheezy" |
+| CentOS Linux | 6 |
 
-The very basic steps needed for a user to get the module up and running. This can include setup steps, if necessary, or it can be an example of the most basic use of the module.
+
+### Beginning with flapjack
+
+Including the flapjack class is all you need to do to get a vanilla Flapjack setup up and running on a supported OS.
+
+```puppet
+include flapjack
+```
 
 ## Usage
 
-This section is where you describe how to customize, configure, and do the fancy stuff with your module here. It's especially helpful if you include usage examples and code samples for doing things with your module.
+Defaults:
+
+```puppet
+include flapjack
+```
 
 ## Reference
 
@@ -47,11 +59,25 @@ Since your module is awesome, other users will want to play with it. Let them kn
 
 ### Run the tests
 
+Unit tests:
+
 ```
 bundle && bundle exec rake spec
 ```
 
+Smoke tests:
+```bash
+puppet apply --modulepath="spec/fixtures/modules" --noop examples/init.pp
+```
+
+Or via vagrant:
+```bash
+vagrant up && vagrant ssh
+cd /vagrant
+puppet apply --modulepath="/vagrant/spec/fixtures/modules" --noop examples/init.pp
+```
+FIXME: the above will fail if spec/fixtures/modules/flapjack symlink is absolute, need to ensure it's created as a relative symlink `cd spec/fixtures/modules && rm flapjack && ln -s ../../.. flapjack`
+
 ## Reporting Issues
 
 Please log issues via [GitHub Issues](https://github.com/flapjack/puppet-flapjack/issues)
-
