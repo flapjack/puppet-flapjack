@@ -11,9 +11,9 @@ describe 'flapjack::install', :type => :class do
         let (:params) {{strings => ['a'] }}
         #binding.pry
         it 'should fail' do
-          Puppet::Util::Log.level = :debug
-          Puppet::Util::Log.newdestination(:console)
-          expect { subject }.to raise_error(Puppet::Error, /is not a string./)
+          # Puppet::Util::Log.level = :debug
+          # Puppet::Util::Log.newdestination(:console)
+          is_expected.to compile.and_raise_error(/is not a string./)
         end
       end
     end # strings
@@ -134,7 +134,7 @@ describe 'flapjack::install', :type => :class do
               prd_json_api_timeout                                      => '300',
               prd_log_dir                                               => '/var/log/flapjack/',
               prd_logger_level                                          => 'DEBUG',
-              prd_notifer_enabled                                       => true,
+              prd_notifier_enabled                                      => true,
               prd_notifier_logger_level                                 => 'INFO',
               prd_notifier_logger_syslog_errors                         => true,
               prd_oobetet_alias                                         => 'flapjacktest',
@@ -157,7 +157,7 @@ describe 'flapjack::install', :type => :class do
               prd_processor_logger_level                                => 'INFO',
               prd_processor_logger_syslog_errors                        => true,
               prd_processor_new_check_scheduled_maintenance_duration    => '24 hours',
-              prd_processor_new_check_scheduled_maintenance_ignore_tags => 'bypass_ncsm',
+              prd_processor_new_check_scheduled_maintenance_ignore_tags => ['bypass_ncsm'],
               prd_queue_email                                           => 'email_notifications',
               prd_queue_jabber                                          => 'jabber_notifications',
               prd_queue_notifier                                        => 'notifications',
@@ -500,7 +500,7 @@ describe 'flapjack::install', :type => :class do
           end
         end
         context 'when the prd_processor_new_check_scheduled_maintenance_ignore_tags param is a string' do
-          let (:pre_condition) {"class{'::flapjack': prd_processor_new_check_scheduled_maintenance_ignore_tags => 'BOGON_NOMAINT'}"}
+          let (:pre_condition) {"class{'::flapjack': prd_processor_new_check_scheduled_maintenance_ignore_tags => ['BOGON_NOMAINT']}"}
           it 'should set the new check scheduled maintenance ignore tags' do
             should contain_file('/etc/flapjack/flapjack_config.yaml').with_content(/processor:\n.*\n.*\n.*\n.*\n*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n    new_check_scheduled_maintenance_ignore_tags:\n      - BOGON_NOMAINT/)
           end

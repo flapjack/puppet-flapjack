@@ -7,5 +7,5 @@ RSpec.configure do |c|
 end
 
 # uncomment the following to get puppet debug output during rspec runs
-# Puppet::Util::Log.level = :debug
-# Puppet::Util::Log.newdestination(:console)
+Puppet::Util::Log.level = :debug
+Puppet::Util::Log.newdestination(:console)

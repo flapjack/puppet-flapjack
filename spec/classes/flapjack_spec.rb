@@ -30,7 +30,7 @@ describe 'flapjack', :type => :class do
       'prd_gw_sms_enabled',
       'prd_gw_sns_enabled',
       'prd_json_api_enabled',
-      'prd_notifer_enabled',
+      'prd_notifier_enabled',
       'prd_notifier_logger_syslog_errors',
       'prd_oobetet_enabled',
       'prd_processor_archive_events',
