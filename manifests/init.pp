@@ -20,7 +20,7 @@
 #
 # WHAT COPYRIGHT?
 #
-class flapjacks(
+class flapjack(
 
   ## General Params
   $feeder_enabled       = false,

@@ -11,6 +11,8 @@ describe 'flapjack::install', :type => :class do
         let (:params) {{strings => ['a'] }}
         #binding.pry
         it 'should fail' do
+          Puppet::Util::Log.level = :debug
+          Puppet::Util::Log.newdestination(:console)
           expect { subject }.to raise_error(Puppet::Error, /is not a string./)
         end
       end
