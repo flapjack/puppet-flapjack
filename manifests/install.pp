@@ -2,9 +2,12 @@
 #
 # Install FlapJack
 #
-class flapjack::install(
+class flapjack::instalX(
   $version = 'present'
 ){
+  notify {"version: ${version}": }
+  fail('foo')
+  warn('sausage')
   validate_string($version)
 
   package { 'flapjack':

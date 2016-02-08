@@ -8,10 +8,10 @@ describe 'flapjack::install', :type => :class do
 
     ['version'].each do |strings|
       context "when the #{strings} parameter is not a string" do
-        let (:params) {{strings => false }}
+        let (:params) {{strings => ['a'] }}
         #binding.pry
         it 'should fail' do
-          expect { subject }.to raise_error(Puppet::Error, /false is not a string./)
+          expect { subject }.to raise_error(Puppet::Error, /is not a string./)
         end
       end
     end # strings

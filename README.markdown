@@ -15,7 +15,7 @@
 
 ## Description
 
-This module takes care of installing and configuring [Flapjack](http://flapjack.io/). It is developed with Puppet v3 and has not yet been tested on Puppet v4 / Puppet Enterprise 2015.x. It also currently only supports Flapjack 1.x and has not been tested with Flapjack 2.x.
+This module takes care of installing and configuring [Flapjack](http://flapjack.io/). It is developed with Puppet v4. It should support Puppet v3.x. Also currently only supports Flapjack 1.x and has not been tested with Flapjack 2.x.
 
 ## Setup
 

@@ -20,7 +20,7 @@
 #
 # WHAT COPYRIGHT?
 #
-class flapjack(
+class flapjacks(
 
   ## General Params
   $feeder_enabled       = false,
@@ -52,7 +52,6 @@ class flapjack(
   $prd_processor_new_check_scheduled_maintenance_ignore_tags = 'bypass_ncsm',
 
   ## Notifier Params
-  $prd_notification_log              = 'notification.log',
   $prd_notifier_logger_level         = 'INFO',
   $prd_notifier_logger_syslog_errors = true,
 
