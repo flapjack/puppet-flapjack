@@ -21,13 +21,11 @@ This module takes care of installing and configuring [Flapjack](http://flapjack.
 
 Use this module for managing machines of a supported OS, currently:
 
-FIXME: How to table?
-
-|| OS || Versions ||
+| OS  | Versions |
+| --- | -------- |
 | Ubuntu Linux | 12.04 "precise", 14.04 "trusty" |
 | Debian Linux | "wheezy" |
 | CentOS Linux | 6 |
-
 
 ### Beginning with flapjack
 
