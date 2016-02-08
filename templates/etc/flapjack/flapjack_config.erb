@@ -285,7 +285,14 @@ production:
       port: <%=@prd_web_ui_port%>
       timeout: <%=@prd_web_ui_timeout%>
       access_log: '<%=@prd_log_dir-%><%=@prd_web_ui_accesslog-%>'
+<% if @prd_web_ui_base_url -%>
+      base_url: '<%=@prd_web_ui_base_url-%>'
+<% end -%>
+<% if @prd_json_api_url -%>
+      api_url: '<%=@prd_json_api_url-%>'
+<% else -%>
       api_url: '<%=@prd_json_api_base_url-%>:<%=@prd_json_api_port-%>/'
+<% end -%>
       # Full path to location of logo file, e.g. /etc/flapjack/custom_logo.png
       #logo_image_path: "/etc/flapjack/web/custom_logo/flapjack-2013-notext-transparent-300-300.png"
       logger:
@@ -297,7 +304,11 @@ production:
       port: <%=@prd_json_api_port%>
       timeout: <%=@prd_json_api_timeout%>
       access_log: '<%=@prd_log_dir-%><%=@prd_json_api_access_log%>'
+<% if @prd_json_api_url -%>
+      base_url: '<%=@prd_json_api_url-%>'
+<% else -%>
       base_url: '<%=@prd_json_api_base_url-%>:<%=@prd_json_api_port-%>/'
+<% end -%>
       logger:
         level: <%=@prd_json_api_logger_level%>
         syslog_errors: <%=prd_jsonapi_syslog%>

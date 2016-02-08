@@ -114,10 +114,12 @@ class flapjack(
   $prd_web_ui_logger_syslog_errors = true,
   $prd_web_ui_port                 = '3080',
   $prd_web_ui_timeout              = '300',
+  $prd_web_ui_base_url             = undef,
 
   ## JSON API Params
   $prd_json_api_access_log           = 'jsonapi_access.log',
   $prd_json_api_base_url             = 'http://localhost',
+  $prd_json_api_url                  = undef,
   $prd_json_api_logger_level         = 'INFO',
   $prd_json_api_logger_syslog_errors = true,
   $prd_json_api_port                 = '3081',
