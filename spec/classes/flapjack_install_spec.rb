@@ -6,79 +6,20 @@ describe 'flapjack::install', :type => :class do
   context 'input validation' do
     let (:facts) {{'osfamily' => 'De'}}
 
-#    ['path'].each do |paths|
-#      context "when the #{paths} parameter is not an absolute path" do
-#        let (:params) {{ paths => 'foo' }}
-#        it 'should fail' do
-#          expect { subject }.to raise_error(Puppet::Error, /"foo" is not an absolute path/)
-#        end
-#      end
-#    end#absolute path
-
-#    ['array'].each do |arrays|
-#      context "when the #{arrays} parameter is not an array" do
-#        let (:params) {{ arrays => 'this is a string'}}
-#        it 'should fail' do
-#           expect { subject }.to raise_error(Puppet::Error, /is not an Array./)
-#        end
-#      end
-#    end#arrays
-
-#    ['bool'].each do |bools|
-#      context "when the #{bools} parameter is not an boolean" do
-#        let (:params) {{bools => "BOGON"}}
-#        it 'should fail' do
-#          expect { subject }.to raise_error(Puppet::Error, /"BOGON" is not a boolean.  It looks to be a String/)
-#        end
-#      end
-#    end#bools
-
-#    ['hash'].each do |hashes|
-#      context "when the #{hashes} parameter is not an hash" do
-#        let (:params) {{ hashes => 'this is a string'}}
-#        it 'should fail' do
-#           expect { subject }.to raise_error(Puppet::Error, /is not a Hash./)
-#        end
-#      end
-#    end#hashes
-
-#    ['opt_hash'].each do |opt_hashes|
-#      context "when the optional param #{opt_hashes} parameter has a value, but not a hash" do
-#        let (:params) {{ hashes => 'this is a string'}}
-#        it 'should fail' do
-#           expect { subject }.to raise_error(Puppet::Error, /is not a Hash./)
-#        end
-#      end
-#    end#opt_hashes
-
-#    ['regex'].each do |regex|
-#      context "when #{regex} has an unsupported value" do
-#        let (:params) {{regex => 'BOGON'}}
-#        it 'should fail' do
-#          expect { subject }.to raise_error(Puppet::Error, /"BOGON" does not match/)
-#        end
-#      end
-#     end#regexes
-
     ['version'].each do |strings|
       context "when the #{strings} parameter is not a string" do
-        let (:params) {{strings => false }}
+        let (:params) {{strings => ['a'] }}
+        #binding.pry
         it 'should fail' do
-          expect { subject }.to raise_error(Puppet::Error, /false is not a string./)
+          # Puppet::Util::Log.level = :debug
+          # Puppet::Util::Log.newdestination(:console)
+          is_expected.to compile.and_raise_error(/is not a string./)
         end
       end
-    end#strings
+    end # strings
 
-#    ['opt_strings'].each do |optional_strings|
-#      context "when the optional parameter #{optional_strings} has a value, but it is not a string" do
-#        let (:params) {{optional_strings => true }}
-#        it 'should fail' do
-#          expect { subject }.to raise_error(Puppet::Error, /true is not a string./)
-#        end
-#      end
-#    end#opt_strings
+  end # input validation
 
-  end#input validation
   ['Debian'].each do |osfam|
     context "When on an #{osfam} system" do
       let (:facts) {{'osfamily' => osfam}}
@@ -193,7 +134,7 @@ describe 'flapjack::install', :type => :class do
               prd_json_api_timeout                                      => '300',
               prd_log_dir                                               => '/var/log/flapjack/',
               prd_logger_level                                          => 'DEBUG',
-              prd_notifer_enabled                                       => true,
+              prd_notifier_enabled                                      => true,
               prd_notifier_logger_level                                 => 'INFO',
               prd_notifier_logger_syslog_errors                         => true,
               prd_oobetet_alias                                         => 'flapjacktest',
@@ -216,7 +157,7 @@ describe 'flapjack::install', :type => :class do
               prd_processor_logger_level                                => 'INFO',
               prd_processor_logger_syslog_errors                        => true,
               prd_processor_new_check_scheduled_maintenance_duration    => '24 hours',
-              prd_processor_new_check_scheduled_maintenance_ignore_tags => 'bypass_ncsm',
+              prd_processor_new_check_scheduled_maintenance_ignore_tags => ['bypass_ncsm'],
               prd_queue_email                                           => 'email_notifications',
               prd_queue_jabber                                          => 'jabber_notifications',
               prd_queue_notifier                                        => 'notifications',
@@ -559,7 +500,7 @@ describe 'flapjack::install', :type => :class do
           end
         end
         context 'when the prd_processor_new_check_scheduled_maintenance_ignore_tags param is a string' do
-          let (:pre_condition) {"class{'::flapjack': prd_processor_new_check_scheduled_maintenance_ignore_tags => 'BOGON_NOMAINT'}"}
+          let (:pre_condition) {"class{'::flapjack': prd_processor_new_check_scheduled_maintenance_ignore_tags => ['BOGON_NOMAINT']}"}
           it 'should set the new check scheduled maintenance ignore tags' do
             should contain_file('/etc/flapjack/flapjack_config.yaml').with_content(/processor:\n.*\n.*\n.*\n.*\n*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n.*\n    new_check_scheduled_maintenance_ignore_tags:\n      - BOGON_NOMAINT/)
           end

@@ -1,0 +1,53 @@
+{
+  "name": "flapjack-flapjack",
+  "version": "0.1.0",
+  "author": "Birger Schmidt, Lindsay Holmwood, Jesse Reynolds",
+  "summary": "Installs, configures, and manages Flapjack.",
+  "license": "MIT",
+  "source": "git://github.com/flapjack/puppet-flapjack.git",
+  "project_page": "https://github.com/flapjack/puppet-flapjack",
+  "issues_url": "https://github.com/flapjack/puppet-flapjack/issues",
+  "dependencies": [
+    {"name":"puppetlabs/stdlib","version_requirement":">= 2.4.0 < 5.0.0"},
+    {"name":"puppetlabs/apt","version_requirement":">= 0.0.1 < 2.0.0"},
+    {"name":"rodgek/logrotate","version_requirement":">= 1.0.0 < 2.0.0"}
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "6"
+      ]
+    },
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "6"
+      ]
+    },
+    {
+      "operatingsystem": "Debian",
+      "operatingsystemrelease": [
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [
+        "12.04",
+        "14.04"
+      ]
+    }
+  ],
+  "requirements": [
+    {
+      "name": "pe",
+      "version_requirement": ">= 3.7.0"
+    },
+    {
+      "name": "puppet",
+      "version_requirement": ">= 3.0.0 < 5.0.0"
+    }
+  ],
+  "description": "Module for Flapjack installation and configuration"
+}

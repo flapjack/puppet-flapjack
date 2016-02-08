@@ -109,7 +109,7 @@ else
   processor_val = 'no'
 end
 
-if @prd_notifer_enabled
+if @prd_notifier_enabled
   prd_notifier_val = 'yes'
 else
   prd_notifier_val = 'no'
@@ -151,10 +151,11 @@ production:
     # You can disable this setting by specifying 0 seconds.
     new_check_scheduled_maintenance_duration: <%=@prd_processor_new_check_scheduled_maintenance_duration%>
     new_check_scheduled_maintenance_ignore_tags:
-<% if @prd_processor_tags_to_bypass_auto_scheduled_maint and @prd_processor_tags_to_bypass_auto_scheduled_maint.length > 0 -%>
-<%  @prd_processor_tags_to_bypass_auto_scheduled_maint.each do |tag| -%>
-      - <%=tag%>
-<%end end -%>
+<% if @prd_processor_new_check_scheduled_maintenance_ignore_tags and @prd_processor_new_check_scheduled_maintenance_ignore_tags.length > 0 -%>
+<%   @prd_processor_new_check_scheduled_maintenance_ignore_tags.each do |tag| -%>
+      - <%= tag %>
+<%   end -%>
+<% end -%>
     logger:
       level: <%=@prd_processor_logger_level%>
       syslog_errors: <%=prog_logger_syslog%>
@@ -162,7 +163,7 @@ production:
   # works out who to notify, and on which media, and with what kind of notification
   # message. It then creates jobs for the various notification gateways below.
   notifier:
-    enabled: <%=prd_notifier_val%>
+    enabled: <%= prd_notifier_val %>
     queue: <%=@prd_queue_notifier%>
     email_queue: <%=@prd_queue_email%>
     sms_queue: <%=@prd_queue_sms%>
@@ -185,12 +186,12 @@ production:
   gateways:
     # Generates email notifications
     email:
-      enabled: <%=prd_email%>
+      enabled: <%= prd_email %>
       # the redis queue this pikelet will look for notifications on
       queue: <%=@prd_queue_email%>
       logger:
         level: <%=@prd_gw_email_logger_level%>
-        syslog_errors: <%=prd_email_logger_syslog%>
+        syslog_errors: <%= prd_email_logger_syslog %>
       # these values are passed directly through to EventMachine::Protocols::SmtpClient configuration,
       # and can be omitted if the defaults are acceptable
       smtp_config:
@@ -199,7 +200,7 @@ production:
         host: <%=@prd_gw_email_smtp_host%>
         # 1025 is the default port for http://mailcatcher.me
         port: <%=@prd_gw_email_smtp_port%>
-        starttls: <%=smtp_starttls%>
+        starttls: <%= smtp_starttls%>
         auth:
           type: <%=@prd_gw_email_smtp_auth_type%>
           username: <%=@prd_gw_email_smtp_auth_username%>
@@ -214,7 +215,7 @@ production:
         <%= @prd_gw_email_enabled ? '' : '#' %>alert.html: '<%=@prd_email_alert_html_path-%>'
     # Generates sms notifications
     sms:
-      enabled: <%=prd_sms_enabled%>
+      enabled: <%= prd_sms_enabled %>
       # the redis queue this pikelet will look for notifications on
       queue: <%=@prd_queue_sms%>
       endpoint: '<%=@prd_gw_sms_endpoint-%>'
@@ -229,7 +230,7 @@ production:
       #  alert.text: '/etc/flapjack/templates/sms/alert.text.erb'
     # Generates SNS notifications
     sns:
-      enabled: <%=prd_sns_enable%>
+      enabled: <%= prd_sns_enable %>
       queue: <%=@prd_queue_sns%>
       region_name: <%=@prd_gw_sns_region_name%>
       # Don't forget to use an IAM user's credentials here so revocation is easy!
@@ -238,7 +239,7 @@ production:
     # Connects to an XMPP (jabber) server, sends notifications (to rooms and individuals),
     # handles acknowledgements from jabber users and other commands.
     jabber:
-      enabled: <%=prd_jabber_enabled%>
+      enabled: <%= prd_jabber_enabled %>
       # the redis queue this pikelet will look for notifications on
       queue: <%=@prd_queue_jabber%>
       server: '<%=@prd_gw_jabber_server-%>'
@@ -268,7 +269,7 @@ production:
     # Sends notifications to and accepts acknowledgements from [PagerDuty](http://www.pagerduty.com/)
     # (NB: contacts will need to have a registered PagerDuty account to use this)
     pagerduty:
-      enabled: <%=prd_pagerduty_enabled%>
+      enabled: <%= prd_pagerduty_enabled %>
       # the redis queue this pikelet will look for notifications on
       queue: <%=@prd_queue_pagerduty%>
       logger:
@@ -279,7 +280,7 @@ production:
       #  alert.text: '/etc/flapjack/templates/pagerduty/alert.text.erb'
     # Browsable web interface
     web:
-      enabled: <%=prd_webui_enable%>
+      enabled: <%= prd_webui_enable %>
       port: <%=@prd_web_ui_port%>
       timeout: <%=@prd_web_ui_timeout%>
       access_log: '<%=@prd_log_dir-%><%=@prd_web_ui_accesslog-%>'
@@ -291,7 +292,7 @@ production:
         syslog_errors: <%=prd_webui_syslog%>
     # HTTP API server
     jsonapi:
-      enabled: <%=prd_json_api_enable%>
+      enabled: <%= prd_json_api_enable %>
       port: <%=@prd_json_api_port%>
       timeout: <%=@prd_json_api_timeout%>
       access_log: '<%=@prd_log_dir-%><%=@prd_json_api_access_log%>'
@@ -302,7 +303,7 @@ production:
     # "out-of-band" end-to-end testing, used for monitoring other instances of
     # flapjack to ensure that they are running correctly
     oobetet:
-      enabled: <%=prd_oobetet_enable%>
+      enabled: <%= prd_oobetet_enable %>
       server: '<%=@prd_oobetet_server-%>'
       port: <%=@prd_oobetet_port%>
       # jabberid, password, alias, rooms: see the jabber pikelet

@@ -27,7 +27,7 @@ describe 'flapjack::feeder::nagios', :type => :define do
       context "when the #{bools} parameter is not an boolean" do
         let (:params) {{bools => "BOGON"}}
         it 'should fail' do
-          expect { subject }.to raise_error(Puppet::Error, /"BOGON" is not a boolean.  It looks to be a String/)
+          is_expected.to compile.and_raise_error(/"BOGON" is not a boolean.  It looks to be a String/)
         end
       end
     end#bools
@@ -54,14 +54,14 @@ describe 'flapjack::feeder::nagios', :type => :define do
       context "when the #{strings} parameter is not a string" do
         let (:params) {{strings => false }}
         it 'should fail' do
-          expect { subject }.to raise_error(Puppet::Error, /false is not a string./)
+          is_expected.to compile.and_raise_error(/false is not a string./)
         end
       end
     end#strings
     context 'when redis_port is not an integer' do
       let (:params) {{'redis_port' => 'bogon'}}
       it 'should fail' do
-        expect {subject}.to raise_error(Puppet::Error, /redis_port parameter must be an integer. bogon is not an integer/)
+        is_expected.to compile.and_raise_error(/redis_port parameter must be an integer. bogon is not an integer/)
       end
     end
   end#input validation
@@ -81,4 +81,3 @@ describe 'flapjack::feeder::nagios', :type => :define do
     end#no params
   end
 end
-

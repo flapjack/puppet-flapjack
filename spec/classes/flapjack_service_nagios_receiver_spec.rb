@@ -27,7 +27,7 @@ describe 'flapjack::service::nagios_receiver', :type => :class do
       context "when the #{bools} parameter is not an boolean" do
         let (:params) {{bools => "BOGON"}}
         it 'should fail' do
-          expect { subject }.to raise_error(Puppet::Error, /"BOGON" is not a boolean.  It looks to be a String/)
+          is_expected.to compile.and_raise_error(/"BOGON" is not a boolean.  It looks to be a String/)
         end
       end
     end#bools

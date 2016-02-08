@@ -6,23 +6,18 @@ describe 'flapjack', :type => :class do
   context 'input validation' do
     let (:facts) {{'osfamily' => 'Debian'}}
 
+    context 'with defaults for all parameters' do
+      it { should contain_class('flapjack') }
+    end
+
     ['prd_pid_dir','prd_log_dir'].each do |paths|
       context "when the #{paths} parameter is not an absolute path" do
         let (:params) {{ paths => 'foo' }}
         it 'should fail' do
-          expect { subject }.to raise_error(Puppet::Error, /"foo" is not an absolute path/)
+          is_expected.to compile.and_raise_error(/"foo" is not an absolute path/)
         end
       end
-    end#absolute path
-
-#    ['array'].each do |arrays|
-#      context "when the #{arrays} parameter is not an array" do
-#        let (:params) {{ arrays => 'this is a string'}}
-#        it 'should fail' do
-#           expect { subject }.to raise_error(Puppet::Error, /is not an Array./)
-#        end
-#      end
-#    end#arrays
+    end # absolute path
 
     [
       'feeder_enabled',
@@ -35,7 +30,7 @@ describe 'flapjack', :type => :class do
       'prd_gw_sms_enabled',
       'prd_gw_sns_enabled',
       'prd_json_api_enabled',
-      'prd_notifer_enabled',
+      'prd_notifier_enabled',
       'prd_notifier_logger_syslog_errors',
       'prd_oobetet_enabled',
       'prd_processor_archive_events',
@@ -48,37 +43,11 @@ describe 'flapjack', :type => :class do
       context "when the #{bools} parameter is not an boolean" do
         let (:params) {{bools => "BOGON"}}
         it 'should fail' do
-          expect { subject }.to raise_error(Puppet::Error, /"BOGON" is not a boolean.  It looks to be a String/)
+          # binding.pry
+          is_expected.to compile.and_raise_error(/"BOGON" is not a boolean.  It looks to be a String/)
         end
       end
-    end#bools
-
-#    ['hash'].each do |hashes|
-#      context "when the #{hashes} parameter is not an hash" do
-#        let (:params) {{ hashes => 'this is a string'}}
-#        it 'should fail' do
-#           expect { subject }.to raise_error(Puppet::Error, /is not a Hash./)
-#        end
-#      end
-#    end#hashes
-
-#    ['opt_hash'].each do |opt_hashes|
-#      context "when the optional param #{opt_hashes} parameter has a value, but not a hash" do
-#        let (:params) {{ hashes => 'this is a string'}}
-#        it 'should fail' do
-#           expect { subject }.to raise_error(Puppet::Error, /is not a Hash./)
-#        end
-#      end
-#    end#opt_hashes
-
-#    ['regex'].each do |regex|
-#      context "when #{regex} has an unsupported value" do
-#        let (:params) {{regex => 'BOGON'}}
-#        it 'should fail' do
-#          expect { subject }.to raise_error(Puppet::Error, /"BOGON" does not match/)
-#        end
-#      end
-#     end#regexes
+    end # bools
 
     [
       'prd_logger_level',
@@ -103,43 +72,34 @@ describe 'flapjack', :type => :class do
       context "when the #{strings} parameter is not a string" do
         let (:params) {{strings => false }}
         it 'should fail' do
-          expect { subject }.to raise_error(Puppet::Error, /false is not a string./)
+          is_expected.to compile.and_raise_error(/false is not a string./)
         end
       end
-    end#strings
+    end # strings
+  end # input validation
 
-#    ['opt_strings'].each do |optional_strings|
-#      context "when the optional parameter #{optional_strings} has a value, but it is not a string" do
-#        let (:params) {{optional_strings => true }}
-#        it 'should fail' do
-#          expect { subject }.to raise_error(Puppet::Error, /true is not a string./)
-#        end
-#      end
-#    end#opt_strings
-
-  end#input validation
   context "When on a Debian system" do
     let (:facts) {{'osfamily' => 'Debian', 'lsbdistcodename' => 'squeeze', 'lsbdistid' => 'Debian'}}
     context 'when fed no parameters' do
       it { should contain_class('flapjack::repo').with({'enable_repo' => false}) }
-      it { should contain_class('flapjack::install').with({'version' => 'latest'}) }
+      it { should contain_class('flapjack::install').with({'version' => 'present'}) }
       it { should contain_class('flapjack::redis').with({'redis_omnibus'=>true, 'redis_server'=>"localhost", 'redis_port'=>"6380"}) }
       it { should contain_class('flapjack::service').with({'service_enabled'=>true, 'flapper_enabled'=>false, 'nagios_receiver'=>false, 'redis_omnibus'=>true}) }
-    end#no params
+    end # no params
     context 'when prd_gw_email_enabled is true' do
       let(:params) {{'prd_gw_email_enabled' => true}}
       it { should contain_class('flapjack::email_templates')}
       [
-      'prd_gw_email_smtp_starttls',
-      'prd_gw_email_logger_syslog_errors',
+        'prd_gw_email_smtp_starttls',
+        'prd_gw_email_logger_syslog_errors',
       ].each do |bools|
         context "and the #{bools} parameter is not an boolean" do
           let (:params) {{'prd_gw_email_enabled' => true, bools => "BOGON"}}
           it 'should fail' do
-            expect { subject }.to raise_error(Puppet::Error, /"BOGON" is not a boolean.  It looks to be a String/)
+            is_expected.to compile.and_raise_error(/"BOGON" is not a boolean.  It looks to be a String/)
           end
         end
-      end#bools
+      end # bools
       [
         'prd_gw_email_smtp_from',
         'prd_gw_email_smtp_reply_to',
@@ -153,10 +113,10 @@ describe 'flapjack', :type => :class do
         context "and the #{strings} parameter is not a string" do
           let (:params) {{'prd_gw_email_enabled' => true, strings => false }}
           it 'should fail' do
-            expect { subject }.to raise_error(Puppet::Error, /false is not a string./)
+            is_expected.to compile.and_raise_error(/false is not a string./)
           end
         end
-      end#strings
+      end # strings
       [
         'prd_email_alert_html_path',
         'prd_email_alert_subject_path',
@@ -168,10 +128,10 @@ describe 'flapjack', :type => :class do
         context "when the #{path} parameter is not a valid file path" do
           let (:params) {{'prd_gw_email_enabled' => true, path => 'foo'}}
           it 'should fail' do
-            expect { subject }.to raise_error(Puppet::Error, /"foo" is not an absolute path/)
+            is_expected.to compile.and_raise_error(/"foo" is not an absolute path/)
           end
         end
-      end#paths
+      end # paths
     end
     context 'when manage_repo is true' do
       let (:params) {{'manage_repo' => true}}
@@ -201,20 +161,20 @@ describe 'flapjack', :type => :class do
         context "when the #{arrays} parameter is not an array" do
           let (:params) {{'prd_gw_jabber_enabled' => true, arrays => 'this is a string'}}
           it 'should fail' do
-             expect { subject }.to raise_error(Puppet::Error, /is not an Array./)
+             is_expected.to compile.and_raise_error(/is not an Array./)
           end
         end
-      end#arrays
+      end # arrays
       [
         'prd_gw_jabber_logger_syslog_errors'
       ].each do |bools|
         context "and the #{bools} parameter is not an boolean" do
           let (:params) {{'prd_gw_jabber_enabled' => true, bools => "BOGON"}}
           it 'should fail' do
-            expect { subject }.to raise_error(Puppet::Error, /"BOGON" is not a boolean.  It looks to be a String/)
+            is_expected.to compile.and_raise_error(/"BOGON" is not a boolean.  It looks to be a String/)
           end
         end
-      end#bools
+      end # bools
       [
         'prd_gw_jabber_server',
         'prd_gw_jabber_port',
@@ -226,10 +186,10 @@ describe 'flapjack', :type => :class do
         context "and the #{strings} parameter is not a string" do
           let (:params) {{'prd_gw_jabber_enabled' => true, strings => false }}
           it 'should fail' do
-            expect { subject }.to raise_error(Puppet::Error, /false is not a string./)
+            is_expected.to compile.and_raise_error(/false is not a string./)
           end
         end
-      end#strings
+      end # strings
     end
     context 'when prd_gw_sms_enabled is true' do
       [
@@ -241,21 +201,21 @@ describe 'flapjack', :type => :class do
         context "and the #{strings} parameter is not a string" do
           let (:params) {{'prd_gw_sms_enabled' => true, strings => false }}
           it 'should fail' do
-            expect { subject }.to raise_error(Puppet::Error, /false is not a string./)
+            is_expected.to compile.and_raise_error(/false is not a string./)
           end
         end
-      end#strings
+      end # strings
       [
         'prd_gw_sms_logger_syslog_errors'
       ].each do |bools|
         context "and the #{bools} parameter is not an boolean" do
           let (:params) {{'prd_gw_sms_enabled' => true, bools => "BOGON"}}
           it 'should fail' do
-            expect { subject }.to raise_error(Puppet::Error, /"BOGON" is not a boolean.  It looks to be a String/)
+            is_expected.to compile.and_raise_error(/"BOGON" is not a boolean.  It looks to be a String/)
           end
         end
-      end#bools
-    end#sms_gw
+      end # bools
+    end # sms_gw
 
     context 'when prd_gw_sns_enabled is true' do
       [
@@ -266,10 +226,10 @@ describe 'flapjack', :type => :class do
         context "and the #{strings} parameter is not a string" do
           let (:params) {{'prd_gw_sns_enabled' => true, strings => false }}
           it 'should fail' do
-            expect { subject }.to raise_error(Puppet::Error, /false is not a string./)
+            is_expected.to compile.and_raise_error(/false is not a string./)
           end
         end
-      end#strings
+      end # strings
     end
 
     context 'when prd_gw_pagerduty_enabled is true' do
@@ -279,20 +239,20 @@ describe 'flapjack', :type => :class do
         context "and the #{bools} parameter is not an boolean" do
           let (:params) {{'prd_gw_pagerduty_enabled' => true, bools => "BOGON"}}
           it 'should fail' do
-            expect { subject }.to raise_error(Puppet::Error, /"BOGON" is not a boolean.  It looks to be a String/)
+            is_expected.to compile.and_raise_error(/"BOGON" is not a boolean.  It looks to be a String/)
           end
         end
-      end#bools
+      end # bools
       [
         'prd_gw_pagerduty_logger_level',
       ].each do |strings|
         context "and the #{strings} parameter is not a string" do
           let (:params) {{'prd_gw_pagerduty_enabled' => true, strings => false }}
           it 'should fail' do
-            expect { subject }.to raise_error(Puppet::Error, /false is not a string./)
+            is_expected.to compile.and_raise_error(/false is not a string./)
           end
         end
-      end#strings
+      end # strings
     end
 
     context 'when prd_web_ui_enabled is true' do
@@ -302,10 +262,10 @@ describe 'flapjack', :type => :class do
         context "and the #{bools} parameter is not an boolean" do
           let (:params) {{'prd_web_ui_enabled' => true, bools => "BOGON"}}
           it 'should fail' do
-            expect { subject }.to raise_error(Puppet::Error, /"BOGON" is not a boolean.  It looks to be a String/)
+            is_expected.to compile.and_raise_error(/"BOGON" is not a boolean.  It looks to be a String/)
           end
         end
-      end#bools
+      end # bools
       [
        'prd_web_ui_port',
        'prd_web_ui_timeout',
@@ -315,10 +275,10 @@ describe 'flapjack', :type => :class do
         context "and the #{strings} parameter is not a string" do
           let (:params) {{'prd_web_ui_enabled' => true, strings => false }}
           it 'should fail' do
-            expect { subject }.to raise_error(Puppet::Error, /false is not a string./)
+            is_expected.to compile.and_raise_error(/false is not a string./)
           end
         end
-      end#strings
+      end # strings
     end
 
     context 'when prd_json_api_enabled is true' do
@@ -328,10 +288,10 @@ describe 'flapjack', :type => :class do
         context "and the #{bools} parameter is not an boolean" do
           let (:params) {{'prd_json_api_enabled' => true, bools => "BOGON"}}
           it 'should fail' do
-            expect { subject }.to raise_error(Puppet::Error, /"BOGON" is not a boolean.  It looks to be a String/)
+            is_expected.to compile.and_raise_error(/"BOGON" is not a boolean.  It looks to be a String/)
           end
         end
-      end#bools
+      end # bools
       [
        'prd_json_api_port',
        'prd_json_api_timeout',
@@ -341,10 +301,10 @@ describe 'flapjack', :type => :class do
         context "and the #{strings} parameter is not a string" do
           let (:params) {{'prd_json_api_enabled' => true, strings => false }}
           it 'should fail' do
-            expect { subject }.to raise_error(Puppet::Error, /false is not a string./)
+            is_expected.to compile.and_raise_error(/false is not a string./)
           end
         end
-      end#strings
+      end # strings
     end
 
     context 'when prd_oobetet_enabled is true' do
@@ -354,20 +314,20 @@ describe 'flapjack', :type => :class do
         context "when the #{arrays} parameter is not an array" do
           let (:params) {{'prd_oobetet_enabled' => true, arrays => 'this is a string'}}
           it 'should fail' do
-             expect { subject }.to raise_error(Puppet::Error, /is not an Array./)
+             is_expected.to compile.and_raise_error(/is not an Array./)
           end
         end
-      end#arrays
+      end # arrays
       [
         'prd_oobetet_logger_syslog_errors'
       ].each do |bools|
         context "and the #{bools} parameter is not an boolean" do
           let (:params) {{'prd_oobetet_enabled' => true, bools => "BOGON"}}
           it 'should fail' do
-            expect { subject }.to raise_error(Puppet::Error, /"BOGON" is not a boolean.  It looks to be a String/)
+            is_expected.to compile.and_raise_error(/"BOGON" is not a boolean.  It looks to be a String/)
           end
         end
-      end#bools
+      end # bools
       [
         'prd_oobetet_alias',
         'prd_oobetet_jabberid',
@@ -383,10 +343,10 @@ describe 'flapjack', :type => :class do
         context "and the #{strings} parameter is not a string" do
           let (:params) {{'prd_oobetet_enabled' => true, strings => false }}
           it 'should fail' do
-            expect { subject }.to raise_error(Puppet::Error, /false is not a string./)
+            is_expected.to compile.and_raise_error(/false is not a string./)
           end
         end
-      end#strings
+      end # strings
     end
   end
 end

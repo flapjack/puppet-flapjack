@@ -49,10 +49,9 @@ class flapjack(
   $prd_processor_logger_level                                = 'INFO',
   $prd_processor_logger_syslog_errors                        = true,
   $prd_processor_new_check_scheduled_maintenance_duration    = '24 hours',
-  $prd_processor_new_check_scheduled_maintenance_ignore_tags = 'bypass_ncsm',
+  $prd_processor_new_check_scheduled_maintenance_ignore_tags = ['bypass_ncsm'],
 
   ## Notifier Params
-  $prd_notification_log              = 'notification.log',
   $prd_notifier_logger_level         = 'INFO',
   $prd_notifier_logger_syslog_errors = true,
 
@@ -63,7 +62,7 @@ class flapjack(
   $prd_gw_sms_enabled       = false,
   $prd_gw_sns_enabled       = false,
   $prd_json_api_enabled     = true,
-  $prd_notifer_enabled      = true,
+  $prd_notifier_enabled      = true,
   $prd_oobetet_enabled      = false,
   $prd_processor_enabled    = true,
   $prd_web_ui_enabled       = true,
@@ -185,7 +184,7 @@ class flapjack(
     $prd_processor_enabled,
     $prd_processor_archive_events,
     $prd_processor_logger_syslog_errors,
-    $prd_notifer_enabled,
+    $prd_notifier_enabled,
     $prd_gw_email_enabled,
     $prd_gw_sns_enabled,
     $prd_gw_sms_enabled,
@@ -197,6 +196,7 @@ class flapjack(
     $prd_json_api_enabled,
     $prd_oobetet_enabled,
   )
+
   validate_absolute_path(
     $prd_pid_dir,
     $prd_log_dir
